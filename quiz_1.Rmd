@@ -1,0 +1,107 @@
+---
+title: "Quiz 1"
+output:
+  word_document: default
+  pdf_document: default
+  html_notebook: default
+---
+```{r,include=FALSE}
+source('library.R')
+```
+
+```{r,include=FALSE}
+loans <- readr::read_csv(file.path("data","kiva_loans.csv"))
+```
+# Basic Statistics Quiz.
+
+1.
+There  are different types of data.  Data can be classified using a number of groupings
+
+* Categorical
+* Numerical
+    * Continuous (or interval)
+    * Discrete
+        * Binomial
+        
+In addition the measurements can be
+
+* Qualitative 
+* Quantitative
+
+If the data is Qualitative, it can be
+
+* Binomial Data,
+* Nominal Data
+* Ordinal Data
+
+In addition, measurements can be
+
+* Objective
+* Subjective
+   
+Look at the data set described below from the crowd sourcing group Kiva.  The data describes 
+economic development loans.  Classify the categories each measurement belongs to.
+
+```{r,include=TRUE,echo=FALSE}
+Hmisc::describe(loans)
+```
+2. Medical studies try to learn about patient populations by sampling known patients. Here is a study
+on immune-related adverse events.
+
+* Describe the population and differentiate it from the sample.
+* Is this a random sample.  If not, what are the implications for the study findings.
+* What inference is being attempted?
+* What population parameters are being estimated?
+* What statistics is being used?
+
+Incidence of immune-related adverse events and its association with treatment outcomes: the MD Anderson Cancer Center experience.
+
+Background Immunotherapy is emerging as the cornerstone for treatment of patients with advanced cancer, but significant toxicity (immune-related adverse events [irAEs]) associated with unbridled T cell activity remains a concern. 
+
+Patients and methods.
+
+A retrospective review of the electronic medical records of 290 patients with advanced cancer treated on an immunotherapy-based clinical trial in the Department of Investigational Cancer Therapeutics at The University of Texas MD Anderson Cancer Center between February 2010 and September 2015 was performed. Clinical and laboratory parameters were collected to determine the incidence of irAEs, risk factors, and their association with treatment outcomes. Results Ninety eight of 290 patients (34%) experienced any grade irAEs. Among the 15 (5.2%) patients with grade ≥ 3 irAEs, the most common irAEs were dermatitis and enterocolitis. Although 80% of the patients with grade ≥ 3 irAEs required systemic corticosteroids, all the 15 patients recovered from the irAEs. On re-challenge, 4 of the 5 patients who had received systemic corticosteroids for irAE continued to respond. There were no irAE-related deaths. Importantly, patients with grade ≥ 3 irAEs had improved overall response rate (25 vs. 6%; p = 0.039) and longer median time to progression (30 weeks vs. 10 weeks; p = 0.0040) when compared to those without grade ≥ 3 irAEs. Conclusion Incidence of irAEs with immunotherapeutic agents indicates an active immune status, suggestive of potential clinical benefit to the patient. Further validation of this association in a large prospective study is warranted.
+
+3. Data skew can make a big impact when calculating measures of dispersion and central tendency.
+What direction of skew is illustrated by the data below.  How would that skew affect the mean?
+How would it affect the median?
+What solution would you propose to find a good central tendency measure?
+```{r}
+region_count <- 
+  loans %>% 
+  select(region,id) %>%
+  filter(!is.na(region)) %>% 
+  group_by(region) %>%
+  summarize(Count_by_Region = n_distinct(id)) %>% 
+  arrange(desc(Count_by_Region))
+region_count
+```
+```{r}
+region_count %>% 
+  ggplot() + 
+  aes(x=Count_by_Region) +
+  geom_histogram()
+           
+                          
+```
+Now look at this reordered version of the data set.  What is the actual problem with the data?
+```{r}
+region_count <- 
+  loans %>% 
+  select(region,id) %>%
+  filter(!is.na(region)) %>% 
+  group_by(region) %>%
+  summarize(Count_by_Region = n_distinct(id)) %>% 
+  arrange(Count_by_Region)
+region_count
+```
+```{r}
+region_count %>% 
+  filter(Count_by_Region < 20) %>% 
+  ggplot() + 
+  aes(x=Count_by_Region) +
+  geom_histogram()
+           
+                          
+```
+

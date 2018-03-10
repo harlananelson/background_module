@@ -1,0 +1,143 @@
+---
+title: "Basic Statistics"
+output: html_notebook
+---
+
+# Basic Statistics
+
+## Basic Probability
+* Random  variable
+* Proabability of an event
+* Coin toss example
+* Independent random variables
+* Mean and variance of a random variable
+* Correlation between random variables
+* Probability distributions
+* Central Limit Theorem
+* The law of large numbers.
+
+## Random Variable
+* A variable normally takes on different values
+* A Random variable has values with different probabilities
+* Coin toss example
+* Dice example
+* Probabilities must sum to 1
+
+## Probability of an Event
+* Sample space and event space
+* Proability of an event
+* Counting 
+* Probability and counting
+* Coint tossing example problems
+
+## Basic Probability
+* Independent events: coin toss example
+* Mean and variance
+* Correlation coefficient (also Pearson's correlation coefficient)
+* Formulas:
+              
+$\mathrm{Covariance(X,Y)} = E[(X-\mu_X)(Y - \mu_Y)]$
+
+$\mathrm{Correlation(X,Y)} = \mathrm{Covariance(X,Y)}/\sigma_x \sigma_Y$
+
+$\mathrm{Pearson~Correlation} = \rho = \frac{\sum_{i=1}^n{(X_i-\bar{X})}(Y_i - \bar{Y})}{\sqrt{\sum_{i=1}^n(X-\bar{X})^2}\sqrt{\sum_{i=1}^n(Y-\bar{Y})^2}}$
+
+
+* Bernoulli trials
+* Binomial distribution
+* Gaussian distribution
+* Chi-square distribution
+* Law of large numbers: empirical mean converges to true mean as we do more trials
+* Central limit theorem: avarage of sampling distribution converges to the average of one as we do more trials.
+* Bayes rule
+* Posterior probability and likelihood
+* Bayesian decision theory
+* Loss functions, expected reisk, and empirical risk
+* Hypothesis testing and log likelihood ratio
+* Neyman-Person lemma, Wilks' theorem
+* Chi-square test, Person correlation coefficiant test
+
+## Bayes Rule
+* Fundamental to statistical inference
+* Conditional Probability
+* Posterior = (likelihood * Prior)/ Normalization Constant
+
+$P(M|X) = \frac{P(X|M)P(M)}{P(X)}$ = $\frac{P(X|M)P(M)}{\{\sum_M{P(X|M)P(M)}}$
+
+## Hyposthesis Testing
+* We can use Bayes rule to help make decisions
+* An outcome or action is described by a model
+* Given two models we pick the one with the higher probability
+* Coin toss example: use likelihood to determin which coin generated the tosses.
+
+## Maximum likelihood example
+* Consider as set of coin tosses produced by a coin with 
+
+$P(H)=P$ and $P(T) = 1-P$
+* We want to determine the probabilty P(H) of the coin the  produces k heads and n-k tails.
+* We are given some tosses (training data): HTHHHTHHHTHTH
+* Solution:
+    - Form the log likelihood
+    - Differentiate w.r.t. P
+    - Set  the derivative to 0 and solve for p
+    
+# Maximum Likelihood exmple
+* Likelihood is the probability of data given the model
+* Data are the set of coin tosses and the model is given by one parameter p
+* P(data|p) = 
+
+$p^k(1-p)^{n-k}$
+
+$\log{P(data|p)} = log(p^k) = log(1-p)^{n-k} = k log(p) + (n -k)log((1-p)$
+*Take the derivative with respect to p, set it to 0, and solve for p
+
+## The Person correlation coefficient
+* Measures the correlation between two variables.
+
+$\mathrm{Pearson~Correlation} = \rho = \frac{\sum_{i=1}^n{(X_i-\bar{X})}(Y_i - \bar{Y})}{\sqrt{\sum_{i=1}^n(X-\bar{X})^2}\sqrt{\sum_{i=1}^n(Y-\bar{Y})^2}}$
+
+* The correlation r is between -1 and 1.  A value of 1 means perfect positive correlation and
+-1 in the other direction
+* The value f(r) is distributed as a t-distribution that can be used to obtain a p-value.
+
+```{r}
+f1 <- function(p,x_mean=5,y_mean=10,sd_x=3^2,sd_y=4^2) {
+  corr <- p*sd_x*sd_y
+  sig_ <- matrix(c(sd_x^2,corr,corr,sd_y^2),nrow=2)
+  MASS::mvrnorm(100,mu=c(x_mean,y_mean),Sigma=sig_)
+}
+d<-f1(.5)
+dimnames(d) <- list(NULL,c("x","y"))
+as.data.frame(d) %>%
+  ggplot() +
+  aes(x,y) +
+  geom_smooth(method='lm') +
+  geom_point()
+
+
+```
+```{r}
+a <- 9 * 16 * .5
+a
+
+MASS::mvrnorm(10,mu=c(1,2),Sigma=matrix(c(9,12,12,16),nrow=2))
+```
+
+```{r}
+library(magrittr)
+library(ggplot2)
+```
+
+```{r}
+as.data.frame(d) %>%
+  ggplot() +
+  aes(x,y) +
+  geom_smooth(method='lm') +
+  geom_point()
+
+
+```
+
+
+
+

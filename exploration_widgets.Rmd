@@ -1,0 +1,48 @@
+---
+title: "R Notebook"
+output: html_document
+runtime: shiny
+---
+
+```{r,message=FALSE}
+source(file.path('.','library.R'))
+```
+```{r,message=FALSE}
+source(file.path('.','read_kaggle_housing_data.R'))
+```
+
+```{r}
+myPlot <- function(data,yvar) {
+  
+  ui <- miniUI::miniPage(
+    gadgetTitleBar("Drag to Select Points"),
+    miniUI::miniContentPanel( 
+      selectInput("predictor","Choose a Predictor:",  
+                  choices = names(data),selected = 'X1stFlrSF' ),
+      plotOutput("plot",height = "100%", brush = "brush")  
+      )   
+    )
+  
+  server <- function(input,output,session) {
+
+    observeEvent(input$cancel,{
+      stopApp(NULL)
+    })    
+    observeEvent(input$done, {
+      returnValue <- brushedPoints(data,input$brush)
+      stopApp(returnValue)
+    })
+    output$plot <- renderPlot({
+      ggplot(data,aes_string(input$predictor,yvar)) + geom_point()
+    })
+  }
+  
+  runGadget(ui,server,viewer = browserViewer())
+  
+}
+```
+
+```{r}
+myPlot(t,"SalePriceLog")
+```
+

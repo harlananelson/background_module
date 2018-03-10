@@ -1,0 +1,59 @@
+---
+title: "Background for Data Science"
+output: html_notebook
+---
+
+# Overview
+* Special background module to bring people up to speed before we get into the actual course material
+* Summary
+    - Sets
+    - Probability
+    - Statistics
+    - Lenear algebra
+    - Data structures
+    - Algorithms
+    - Computer programming in Python
+* Please work on all exercises for maximum benefit
+
+# Probability
+* Set Theory
+* Random variable
+* Counting
+* Probability of events
+* Independent random variables
+* Coin Toss examples
+* Probability distributions
+* Probability inequalities
+
+## Set Theory
+### Sample Space.
+The simple example of a sample space is the result of a coin toss: heads or tails.
+This is similar to making a decision: yes or no.  Note that the sample space contains all possible
+outcomes.  Your age is not a sample set, but all possible values that your age could be is a sample set.
+All colors offered by a paint company is a sample set.  
+
+The idea of a sample space is important because the possible results of an experiment are a sample space.
+The experementer starts out with observational units.  Observations are take from those observational units.
+The observations should be contained in the sample space.  
+* An observational unit: a coin
+* The experement: Flip the coin
+* The set of outcomes: Heads or Tails.
+
+The set of outcomes depends on how the outcome is measured.  This is because natural events are 
+converted to data: nominal, ordinal, interval, ratio.
+For example: Will it snow tomorrow.  We could measure the sample space as yes or no: a bernoili variable.  Or we could 
+record the number of inches: an integer. 
+
+Another example is tire failure. You can measure the number of flat tires per 100,000 miles.  Or you can measure the
+number of miles needed on average to experience 3 flat ties.  
+
+A sample space can be a  set of discrete outcomes or a continous outcome.  In the case of
+ a continous outcome, we talk about intervals instead of a single number.  For example, we can 
+ say it will rain between 2 to 4 inches tomorrow.  We don't predict three inches because it will never 
+ be exactly three inches. 
+
+Mathematical opperations on sample spaces are union, intersection and compliments.  
+
+## Random Variable
+
+

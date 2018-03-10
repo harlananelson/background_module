@@ -1,0 +1,55 @@
+---
+title: "Data Science for Good: Kiva Crowdfunding"
+output: html_notebook
+---
+
+```{r}
+source('library.R')
+```
+
+Read in the kiva_loans data.
+
+```{r}
+loans <- readr::read_csv(file.path("data","kiva_loans.csv"))
+```
+
+```{r}
+Hmisc::contents(loans)
+```
+
+```{r}
+loans <- Hmisc::dataframeReduce(loans)
+```
+
+```{r}
+Hmisc::contents(loans)
+```
+```{r}
+Hmisc::describe(loans)
+```
+```{r}
+names(loans)
+```
+Subset the data set to Zimbabwe.
+```{r}
+Zimbabwe <- loans %>% filter(country == "Zimbabwe")
+```
+
+select the fields country and borrower_genders only
+```{r}
+gender <- loans %>% select(country, ends_with("genders"))
+gender
+```
+
+Take a look at odd values of borrower_genders
+```{r}
+loans %>% 
+  group_by(borrower_genders) %>% 
+  summarise(n = n()) %>% 
+  arrange(n)
+```
+
+
+
+
+
