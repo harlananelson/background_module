@@ -1,3 +1,5 @@
+library(shiny)
+library(shinyapp)
 library(quantmod)
 library(tidyquant)
 library(data.table)

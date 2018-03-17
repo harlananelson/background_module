@@ -39,7 +39,7 @@ filter to males only
 ```{r,echo=FALSE}
 gender <- Zimbabwe %>% 
   select(id,borrower_genders) %>% 
-  filter(str_detect(borrower_genders, regex("[^e]male",ignore_case = TRUE))) %>% 
+  filter(str_detect(borrower_genders, regex("[^e]male|^male",ignore_case = TRUE))) %>% 
   arrange(id)
 gender
 ```
@@ -54,6 +54,7 @@ Unnest example:
 Zimbabwe %>% 
   select(id,borrower_genders) %>% 
   unnest_tokens(word,borrower_genders) %>% 
+#  filter(id == 680743)  %>% 
   filter(word == 'male') %>% 
   arrange(id)
 ```
@@ -160,7 +161,9 @@ save(borrower_genders,file=file.path("data","borrower_genders"))
 ```
 
 ```{r}
-borrower_genders %>% ggplot() +
+borrower_genders %>% 
+  filter(loan_amount < 40000) %>% 
+  ggplot() +
   aes(loan_amount,term_in_months,color=gender_first) +
   geom_point()
 
@@ -172,6 +175,7 @@ borrower_genders %>% ggplot() +
 ```
 ```{r}
 borrower_genders %>% 
+  filter(loan_amount < 40000) %>% 
   ggplot(aes(y=loan_amount,x=gender_first,group=gender_first)) +
   geom_boxplot()
 

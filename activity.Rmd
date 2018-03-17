@@ -7,15 +7,73 @@ output: html_notebook
 source('read_data.R')
 ```
 ```{r}
+d <- loans %>% dplyr::sample_n(1000)
+save(d,file=file.path("data","d"))
+load(file=file.path("data","d"))
+```
+```{r}
 my_count <- function(d,group_var) {
   group_var <- enquo(group_var)  # quote the value of group_var
   d %>% group_by(!!group_var) %>% 
     summarise(count = n())
 }
 ```
+
 ```{r}
-loans %>% my_count(activity)
+dc <- d %>% my_count(activity) %>% arrange(-count) %>%  slice(1:5)
 ```
+
+
+
+
+Kantar
+
+programming with dplyr
+enquo  enquote
+x <-  quantityu
+```{r}
+my_count <- function(d,group_var) {
+  group_var <- enquo(group_var)  # quote the value of group_var
+  d %>% group_by(!!group_var) %>% 
+    summarise(count = n())
+}
+```
+
+
+```{r}
+dc <- d %>% my_count(activity) %>% arrange(-count) %>%  slice(1:5)
+dc %>% ggplot() +
+  aes(x=activity,y=count,group=activity,stat='identity') +
+  geom_col()
+choices <- list("activity","sector")
+```
+
+```{r}
+inputPanel(
+  selectInput("var_x", label = "Plot X variable:",
+              choices = choices, selected = 'activity')
+)
+``` 
+```{r}
+renderPlot({
+  dc %>% ggplot() +
+  aes(x=activity,y=count,group=activity,stat='identity') +
+  geom_col()
+})
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+dc %>% ggplot() +
+  aes(x=activity,y=count,group=activity,stat='identity') +
+  geom_col()
+```
+
 ```{r}
 loans %>% my_count(sector)
 ```

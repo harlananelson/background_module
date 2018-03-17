@@ -42,6 +42,7 @@ echange_rates <- read_json(file.path("data","exchangerates_2014_01_14.json")) %>
 #  spread_values(rates      = jstring("rates"))
 ```
 
+
 Next try to join this tibble to the kiva data.
 ```{r}
 left_join(c,echange_rates) %>% 

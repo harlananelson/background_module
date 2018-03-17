@@ -56,7 +56,8 @@ the records by descending count buy using *-sector_count*.
 ```{r,}
 d %>% group_by(sector) %>% 
   summarize(sector_count = n()) %>% 
-  arrange(-sector_count)
+  arrange(-sector_count) %>% 
+  slice(1:10)
 ```
 Select the *Housing* sector and sample to make it easier to plot.
 ```{r}
@@ -89,6 +90,7 @@ da %>% na.omit() %>%
   ggplot(aes(posted_time,disbursed_2_funded,color=sector)) + 
   scale_y_continuous() +
   geom_point() +
+  geom_smooth() +
   labs(x        = "Loan Posted Date",
        y        = "Time from Funding to Dispersion", 
        title    = "Kiva Loan Posting Date and Days from Funded To Disbursion",
@@ -121,13 +123,6 @@ da %>% na.omit() %>%
 ```
 
 
-```{r}
-da %>% na.omit() %>%  
-  ggplot(aes(funded_time,disbursed_time)) + 
-  geom_point() +
-  labs(x="Load Funded Time",y="Loan Disbursed Time", title="Kiva Loan Posted and Disbursed Times",
-       subtitle = "Posted and Distributed times are almost equal",
-       caption = "Kiva: Loan Times")
-```
+
 
 
