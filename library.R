@@ -10,5 +10,6 @@ library(lubridate)
 library(ggplot2)
 library(lucr)
 library(tidyjson)
+
 #devtools::install_github("sailthru/tidyjson")
 library(tidyjson)

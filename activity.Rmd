@@ -28,6 +28,8 @@ loans %>% my_count(country_code)
 ```{r}
 loans %>% my_count(country)
 ```
+
+
 ```{r}
 loans %>% my_count(region)
 ```

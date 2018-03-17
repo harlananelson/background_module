@@ -10,5 +10,4 @@ locations <- data.table::fread(file.path("data","kiva_mpi_region_locations.csv")
 
 loan_themes <-  data.table::fread(file.path("data","loan_theme_ids.csv"))
 
-
 loan_region <-  data.table::fread(file.path("data","loan_themes_by_region.csv"))

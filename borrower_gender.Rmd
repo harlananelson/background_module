@@ -169,7 +169,6 @@ borrower_genders %>% ggplot() +
 borrower_genders %>% ggplot() +
   aes(loan_amount,term_in_months,fill=gender_first,group=gender_first) +
   geom_boxplot()
-
 ```
 ```{r}
 borrower_genders %>% 

@@ -154,3 +154,4 @@ d. $P(A\cup B) - P(B|A)$
 8. (c.) This is R^2
 9. (a.) Yes. This is a one tailed test with a significance level of 0.05
 10. (b.) The addition of two mutually exclusive sets. 
+

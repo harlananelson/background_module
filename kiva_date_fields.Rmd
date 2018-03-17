@@ -74,6 +74,7 @@ da %>% na.omit() %>%
        subtitle = "Posted and Funded times are almost equal",
        caption = "Kiva: Loan Times")
 ```
+
 Try some date calculations.  There are *periods* *durations* and *intervals*.
 ```{r}
 da <- da %>% 

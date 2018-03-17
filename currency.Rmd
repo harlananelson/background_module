@@ -7,7 +7,7 @@ output: html_document
 Take a look at converting the currency.
 
 How to used the date fields
-
+#
 # Read the data and load libraries
 ```{r}
 source('read_data.R')

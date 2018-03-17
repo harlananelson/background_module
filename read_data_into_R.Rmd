@@ -16,7 +16,7 @@ loans <- data.table::fread(file.path("data","kiva_loans.csv"))
 #loans <- readr::read_csv(file.path("data","kiva_loans.csv"))
 ```
 
-# Create summaries
+# Create summaries.
 ```{r}
 Hmisc::contents(loans)
 ```
