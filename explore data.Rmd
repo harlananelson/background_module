@@ -9,6 +9,12 @@ output: html_notebook
 source('library.R')
 ```
 
+
+```{r}
+names(loans)
+```
+Subset the data set to Zimbabwe.
+=======
 # Read in the kiva_loans data.
 ```{r,cache=TRUE,include=FALSE}
 loans <- data.table::fread(file.path("data","kiva_loans.csv"))
@@ -17,10 +23,36 @@ loans <- data.table::fread(file.path("data","kiva_loans.csv"))
 ```
 
 # Create summaries
+>>>>>>> b8faf4451db02985ad75169aeed1de3f210b5d96
 ```{r}
-Hmisc::contents(loans)
+Zimbabwe <- loans %>% filter(country == "Zimbabwe")
 ```
 
+select the fields country and borrower_genders only
+```{r}
+gender <- loans %>% select(country, ends_with("genders"))
+gender
+```
+
+
+```{r}
+library(stringr)
+```
+
+```{r}
+
+#Zimbabwe %>% filter(borrower_genders %in% "female") %>% 
+#  select(sector,country,loan_amount,borrower_genders)
+
+Zimbabwe %>% mutate(gender = str_detect(borrower_genders, "female")) %>% 
+  select(sector,country,loan_amount,borrower_genders,gender)
+```
+
+```{r}
+Zimbabwe %>% mutate(gender = grepl("^female",borrower_genders)) %>% 
+  select(gender,borrower_genders,sector,country,loan_amount) %>% 
+  filter(grepl("^male,",borrower_genders))
+=======
 ```{r,cache=TRUE}
 Hmisc::describe(loans)
 ```
@@ -120,6 +152,10 @@ gender %>%
 ```
 
 
+
+
+Take a look at odd values of borrower_genders
+=======
 ## Put everything together
 ```{r}
 female_first <- gender %>% 
