@@ -7,26 +7,7 @@ output: html_notebook
 source('library.R')
 ```
 
-Read in the kiva_loans data.
 
-```{r}
-loans <- readr::read_csv(file.path("data","kiva_loans.csv"))
-```
-
-```{r}
-Hmisc::contents(loans)
-```
-
-```{r}
-loans <- Hmisc::dataframeReduce(loans)
-```
-
-```{r}
-Hmisc::contents(loans)
-```
-```{r}
-Hmisc::describe(loans)
-```
 ```{r}
 names(loans)
 ```
@@ -40,6 +21,28 @@ select the fields country and borrower_genders only
 gender <- loans %>% select(country, ends_with("genders"))
 gender
 ```
+
+
+```{r}
+library(stringr)
+```
+
+```{r}
+
+#Zimbabwe %>% filter(borrower_genders %in% "female") %>% 
+#  select(sector,country,loan_amount,borrower_genders)
+
+Zimbabwe %>% mutate(gender = str_detect(borrower_genders, "female")) %>% 
+  select(sector,country,loan_amount,borrower_genders,gender)
+```
+
+```{r}
+Zimbabwe %>% mutate(gender = grepl("^female",borrower_genders)) %>% 
+  select(gender,borrower_genders,sector,country,loan_amount) %>% 
+  filter(grepl("^male,",borrower_genders))
+```
+
+
 
 Take a look at odd values of borrower_genders
 ```{r}

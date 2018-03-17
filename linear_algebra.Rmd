@@ -2,6 +2,9 @@
 title: "Linear Algebra"
 output: html_notebook
 ---
+```{r}
+library(Matrix)
+```
 
 What is a matrix?  
 How is it represented?
@@ -77,12 +80,74 @@ The number of columns of A must equal the number of rows of b
 The resulting matrix will have the number of columns of A and the number of rows of B.
 ```{r}
 A <- matrix(c(2,4,1,3,5,2),nrow=3)
-print(A):
+print(A)
 B <- matrix(c(-1,4,2,2,3,1),nrow=2)
 print(B)
 dim(A)
 dim(B)
-A%*%B
+C<-A%*%B
+print(C)
+dim(C)
+```
+```{r}
+I <- matrix(c(1,1,1,1,1,1,1,1,1),nrow=3)
+print(I)
+print(C)
+solve(C)
+print(I %*% C)
+I <- Matrix::diag(3)
+print(I)
+C %*% I
+solve(C)
+Matrix::solve(C,I)
+```
+
+```{r}
+2*(-1) + 3*4
+2*3 + 3*1
+1*3 + 2*1
+```
+column of first matrix
+row of the second.
+
+The final matrix has the dimension of
+the number of row is the first 
+the number of columns in the second.
+
+
+```{r}
+A <- matrix(c(2,4,1,3,5,2,4,7,5,3,5,7),nrow=4)
+print(A)
+dim(A)
+B <- matrix(c(-1,4,2,2,3,1),nrow=3)
+print(B)
+dim(B)
+C<-A%*%B
+print(C)
+dim(C)
+```
+
+When we multiply A*B
+The result has the number of rows in A
+and the number of columns in B 
+The number of columns in A and the number of row is B must be the same.
+
+The results can be indexed by 
+the row in A
+the column in B 
+```{r}
+# 10 row 2 column 1
+A[2,]
+B[,1]
+4*(-1) + 2*4 + 3 *2
+```
+
+y = mx + b
+
+
+
+```{r}
+
 ```
 
 

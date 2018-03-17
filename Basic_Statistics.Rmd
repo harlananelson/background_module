@@ -25,6 +25,88 @@ output: html_notebook
 
 ## Probability of an Event
 * Sample space and event space
+
+Random variable associates a number between 0 and 1 to each element in the sample space
+
+attach a measure to each mutually exclusive element.
+1. Heads: 0.5
+2. Tails: 0.5
+
+Interpretation.
+
+Frequency.
+If you toss a coin many times, you will get tails about half of the time.
+
+Example: two dice.  Counting.
+When you toss one die, there are six possibilities, so the chance of getting
+a 1 is 1/6.
+
+Two dice.  Chance of a  the sum of the dots to be equal to 2.
+6*6 =36 so there are 36 ways to throw two dice.  
+One way results in a 2.  So we have 1/36.
+
+What is the chance of the sum being 3?
+2: 1
+3: 2
+4: 3
+5: 4
+6: 5
+7: 6
+8:  5
+9:  4 
+10: 3
+11: 2
+12: 1
+
+Does it add up to 36?
+
+P(A) = .25
+P(B) = .25
+$.25 <= P(AUB) <= .5$
+LaTeX
+$0 \le P(A\cap B) \le .25$
+
+P(A|B)  Probability of A given B.
+The universe has a probability of 1.
+P(U) = 1
+P(B) = P(B|U)
+
+What is the change that you role a 4 given that one die is a 3?
+P(4|one die is a 3)
+
+What is the deominator.
+How many ways can one die be a 3?
+There are 12 ways.
+3,1   1,3
+2/12
+
+Multiply the probability of two independent events to get the
+probability of  both event occuring
+
+```{r}
+1/6 * 5/6
+5/36
+```
+5/36
+
+
+6,1  1,6  2,5   5,2  3,4  4,3  
+
+
+
+
+
+No discrete measurement?
+attach probabilities to intervals.
+What is the chance it will rain between 3 and 4 inches.
+
+
+
+Mutually exclusive:  Heads and tails are mutually exclusive.
+We can add probabilities of events that are mutually exclusive.
+
+
+
 * Proability of an event
 * Counting 
 * Probability and counting
@@ -99,12 +181,36 @@ $\mathrm{Pearson~Correlation} = \rho = \frac{\sum_{i=1}^n{(X_i-\bar{X})}(Y_i - \
 * The correlation r is between -1 and 1.  A value of 1 means perfect positive correlation and
 -1 in the other direction
 * The value f(r) is distributed as a t-distribution that can be used to obtain a p-value.
+```{r}
+library(magrittr)
+library(ggplot2)
+```
+```{r}
+x_mean<-5
+y_mean<-10
+sd_x <-3
+sd_y <- 4
+p <- -1
+corr <- p*sd_x*sd_y
+sig_ <- matrix(c(sd_x^2,corr,corr,sd_y^2),nrow=2)
+dimnames(sig_) <- list(c("X","Y"),c("X","Y"))
+print(sig_)
+m <- matrix(c(9,-13,-13,16),nrow=2)
+m
+
+d<-MASS::mvrnorm(10000,mu=c(x_mean,y_mean),Sigma=m)
+cov(d)
+```
 
 ```{r}
-f1 <- function(p,x_mean=5,y_mean=10,sd_x=3^2,sd_y=4^2) {
+f1 <- function(p,x_mean=5,y_mean=10,sd_x=3,sd_y=4) {
+  #' Simulate some data for a bivariate normal distribution.
+  #' X has variance
+  #' Y has variance
+  #' There is correlation between X and Y
   corr <- p*sd_x*sd_y
   sig_ <- matrix(c(sd_x^2,corr,corr,sd_y^2),nrow=2)
-  MASS::mvrnorm(100,mu=c(x_mean,y_mean),Sigma=sig_)
+  MASS::mvrnorm(10000,mu=c(x_mean,y_mean),Sigma=sig_)
 }
 d<-f1(.5)
 dimnames(d) <- list(NULL,c("x","y"))
@@ -137,6 +243,20 @@ as.data.frame(d) %>%
 
 
 ```
+
+
+$P(A \cap B) $
+$P(A|B)P(B)$
+$P(B|A)P(A)$
+$P(A|B) = \frac{P(A \cap B)}{P(B)$
+$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$
+```{r}
+
+```
+
+Conditional prob 
+
+i
 
 
 
