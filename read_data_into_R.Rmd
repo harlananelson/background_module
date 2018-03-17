@@ -1,0 +1,26 @@
+---
+title: "Data Science for Good: Kiva Crowdfunding"
+subtitle: "Read the Data into R"
+output: html_notebook
+---
+
+# Load any necessary libraries
+```{r,cache=TRUE,include=FALSE}
+source('library.R')
+```
+
+# Read in the kiva_loans data.
+```{r,cache=TRUE,include=FALSE}
+loans <- data.table::fread(file.path("data","kiva_loans.csv"))
+# This method from readr will read the csv, but it is slower than fread from data.table
+#loans <- readr::read_csv(file.path("data","kiva_loans.csv"))
+```
+
+# Create summaries
+```{r}
+Hmisc::contents(loans)
+```
+
+```{r,cache=TRUE}
+Hmisc::describe(loans)
+```
