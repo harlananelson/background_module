@@ -1,0 +1,156 @@
+---
+title: "Quiz 1"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+  pdf_document: default
+  html_notebook: default
+---
+```{r,include=FALSE}
+source('library.R')
+load(file.path("data","borrower_genders"))
+```
+
+# Basic Statistics Quiz.
+
+&nbsp;
+
+*Question 1.* 
+
+Gender is coded as 1 = Female and 0=Male. What is the classification for this field using set theory?
+
+a. Natural Numbers
+b. Integers
+c. Rational Numbers
+d. Real Numbers
+e. Complex Numbers (the Real numbers extended with the square root of negative 1)
+     
+&nbsp;
+
+*Question 2. * 
+
+Gender is coded as "Female" and "Male," what is the type of data?
+
+a. Categorical
+b. Continuous
+c. Discrete, not Binomial
+d. Binomial
+
+*Question 3.* 
+
+Regions are ranked based on total loan amounts. What type of data are these rankings? 
+
+a. Continuous Data
+c. Discrete Binomial Data
+d. Discrete Nominal Data
+e. Discrete Ordinal Data
+
+&nbsp;
+ 
+*Question 4.*  
+
+Currency is recorded for each loan amount.  What R type would be used for currency?
+
+a. Logical
+b. Integer
+c. double
+d. Character
+
+&nbsp;
+
+*Question 5.*  
+
+A probability space is divided up into three mutually exclusive sets. One set has the 
+probability of .97.  The other two set have equal probability.  What is the probability of each?
+
+a. .03
+b. .015
+c. 1
+d. 0
+
+*Question 6.* 
+
+If two continuous variables x and y are independence, then the slope of the 
+regression line that models y as a function of x, will have what slope?
+
+a. Positive slope
+b. Negative slope
+c. Zero Slope (a flat line)
+d. Cannot be know unless the correlation is known.
+
+*Question 7.* 
+
+If events A and B are mutually exclusive then their intersection will be:
+
+a. P(A)*P(B)
+b. P(A)
+c. P(B)
+d. zero.
+
+*Question 8.* 
+
+If two continuous variables x and y are linearly dependent and a regression
+line $\hat{y}$ is fit predicting y from x, and the sum of squared errors is calculated, with
+the error measuring the distance between the predicted value and the actual value, and the 
+total sum of squares is measured where each distance from the actual value to the mean of the 
+actual values is squared and summed,  and the sum of squares of the model is calculated where the distance from
+the predicted value to the mean of the actual values is squared and summed, then:
+
+a) The proportion of sum of squared errors to total sum of squares will be between -1 and 1.
+b) The proportion of sum of squared errors to total sum of squares is call R^2.
+c) The proportion of the Model sum of squares to the total sum of squares is the portion of 
+variance in y explained by x.
+d) The sum of squares or the errors will always be greater than the sum of squares of the model.
+
+&nbsp;
+
+9. A study is conducted.  A group of 20 people are matched and 10 are put on an exercise regimen, the other 20 are put on a low calorie diet. Everybody is matched to one other similar person (weight, age,sex).
+The difference in weight loss between the each pair is used.  The paired value for weight loss for 
+those on the exercise regimen is subtracted from the weight loss for those on the low calorie diet.  
+The appropriate statistic is calculated as well as the standard error of that statistic.
+The central limit theorem applies and it is accepted that the statistic follows a student t distribution with
+a standard deviation equal to the calculated standard error.  
+The significance level for the test is set at 5%.  The group with the low calorie diet lost more weight.
+When the distribution of the test statistic was plotted, the area under the curve to the right was
+0.05.  Does the study show that diet is better than exercise at the significance level of 0.05%?
+
+a. Yes
+b. No
+
+```{r,echo=FALSE}
+
+x <- seq(-3,3,by=.01)
+y <- dt(x,df=9)
+df <- data.frame(x=x,y=y)
+x_95 <- qt(0.95,df = 9)
+x_index <- which.min(abs(df$x - x_95))
+yh <-df$y[x_index]
+xh <-df$x[x_index]
+df %>% ggplot() +
+  aes(x=x,y=y) +
+  geom_point() +
+  geom_segment(aes(x = xh,y=0, xend = xh, yend=yh)) +
+  annotate("text",x=xh + 0.5,y=yh,label="0.05%")
+```
+*Question 10.*
+
+If there are two events A and B. The what is equal to the probability of A 
+
+a. $P(A \cap B)/P(A)$
+b. $P(A \cap B) + P(A \cap \bar{B})$
+c. $P(A)*P(B) + P(A)*P(\bar{B})$
+d. $P(A\cup B) - P(B|A)$
+
+## Answers
+
+1. (a.)  It includes 0, so choose the Integers not the natural numbers.
+2. (a.)  Gender as coded is categorical.
+3. (d.) Ordinal
+4. (c.) double
+5. (b.) 0.015.  2*(0.015) = 0.03  
+6. (c.)
+7. (d.) zero
+8. (c.) This is R^2
+9. (a.) Yes. This is a one tailed test with a significance level of 0.05
+10. (b.) The addition of two mutually exclusive sets. 

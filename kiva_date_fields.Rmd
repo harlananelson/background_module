@@ -1,0 +1,132 @@
+---
+title: "Data Science for Good: Kiva Crowdfunding"
+subtitle: "Dealing with Dates using lubridate"
+output: html_notebook
+---
+
+How to used the date fields
+
+# Read the data and load libraries
+```{r}
+source('read_data.R')
+```
+
+
+# Identify the date fields.
+```{r}
+Hmisc::contents(loans)
+```
+The time related fields are posted_time, disbursed_time, funded_time, term_in_months, repayment_interval, and date.
+Look at the dates. We see that dates are a date-time string.  This can be handled with 
+lubridate.
+
+```{r}
+d <- loans %>% 
+  select(posted_time, disbursed_time, funded_time, term_in_months, repayment_interval,date) %>% 
+  slice(1:40)
+```
+
+Note that lubridate::as_date adds the class Date to dates.  The atomic type is converted to
+double. This allows numerical calculations.
+```{r}
+glue("The class of date is: {class(d$date)}")
+glue("The type of date is: {typeof(d$date)}")
+glue("The class of as_date is: {class(as_date(d$date))}")
+glue("The type of as_date: is: {typeof(lubridate::as_date(d$date))}")
+```
+
+
+Let's convert everything to date.  Some of the fields are date time, but that level of accurace is
+not really needed.  It might be interesting to see the time of day, and am or pm is track using 
+the lubridate function am.
+```{r}
+d <- loans %>% 
+  select(sector,posted_time, disbursed_time, funded_time, term_in_months, repayment_interval,date,
+         funded_amount,loan_amount,term_in_months,sector) %>% 
+  mutate(funded_am      = am(as_date(funded_time))) %>% 
+  mutate(posted_time    = as_date(posted_time),
+         disbursed_time = as_date(disbursed_time),
+         funded_time    = as_date(funded_time),
+         term_in_months = as_date(term_in_months),
+         date           = as_date(date))
+```
+Let's find a good subsetting field.
+*Sector* seems like a good choice.  Count the records in each sector and order
+the records by descending count buy using *-sector_count*.
+```{r,}
+d %>% group_by(sector) %>% 
+  summarize(sector_count = n()) %>% 
+  arrange(-sector_count)
+```
+Select the *Housing* sector and sample to make it easier to plot.
+```{r}
+da <- d %>% 
+  filter(sector %in% c('Housing','Clothing','Education')) %>% 
+  sample_n(size=1000)
+```
+
+```{r}
+da %>% na.omit() %>%  
+  ggplot(aes(funded_time,posted_time)) + 
+  geom_point() +
+  geom_smooth(method=loess, se=TRUE,level=0.999) +
+  labs(x="Load Funded Time",y="Loan Posted Time", title="Kiva Loan Funded and Posted Times",
+       subtitle = "Posted and Funded times are almost equal",
+       caption = "Kiva: Loan Times")
+```
+Try some date calculations.  There are *periods* *durations* and *intervals*.
+```{r}
+da <- da %>% 
+  mutate(disbursed_2_funded = disbursed_time - funded_time)
+```
+
+
+Lets try this in some plots.
+Interesting that loans appear to be disbursed before they are funded.
+```{r}
+da %>% na.omit() %>% 
+  ggplot(aes(posted_time,disbursed_2_funded,color=sector)) + 
+  scale_y_continuous() +
+  geom_point() +
+  labs(x        = "Loan Posted Date",
+       y        = "Time from Funding to Dispersion", 
+       title    = "Kiva Loan Posting Date and Days from Funded To Disbursion",
+       subtitle = "Posted and time to Funding",
+       caption  = "Kiva: Loan Funding Days")
+```
+Side by Side box plots.
+```{r}
+da %>% na.omit() %>% 
+  ggplot(aes(y=disbursed_2_funded,x=sector,color=sector)) + 
+  scale_y_continuous() +
+  geom_boxplot() +
+  labs(x        = "Loan Posted Date",
+       y        = "Time from Funding to Dispersion", 
+       title    = "Kiva Loan Posting Date and Days from Funded To Disbursion",
+       subtitle = "Posted and time to Funding",
+       caption  = "Kiva: Loan Funding Days")
+```
+The violin plot is an alternative to the box plot.  I think it beats a box plot.
+```{r}
+da %>% na.omit() %>% 
+  ggplot(aes(y=disbursed_2_funded,x=sector,color=sector)) + 
+  scale_y_continuous() +
+  geom_violin() +
+  labs(x        = "Loan Posted Date",
+       y        = "Time from Funding to Dispersion", 
+       title    = "Kiva Loan Posting Date and Days from Funded To Disbursion",
+       subtitle = "Posted and time to Funding",
+       caption  = "Kiva: Loan Funding Days")
+```
+
+
+```{r}
+da %>% na.omit() %>%  
+  ggplot(aes(funded_time,disbursed_time)) + 
+  geom_point() +
+  labs(x="Load Funded Time",y="Loan Disbursed Time", title="Kiva Loan Posted and Disbursed Times",
+       subtitle = "Posted and Distributed times are almost equal",
+       caption = "Kiva: Loan Times")
+```
+
+

@@ -1,0 +1,56 @@
+---
+title: "Kiva Loans"
+subtitle: "Currency"
+output: html_document
+---
+
+Take a look at converting the currency.
+
+How to used the date fields
+
+# Read the data and load libraries
+```{r}
+source('read_data.R')
+```
+
+```{r}
+c <- loans %>% 
+  select(currency,country,loan_amount,funded_amount)  %>% 
+  sample_n(1000)
+```
+
+```{r}
+head(c)
+```
+
+Look at currency.
+I used 2014 exchange rates as given by openexchangerates.org.
+I entered entered the correct url as discribed on
+https://docs.openexchangerates.org/docs/api-introduction
+This I saved the result to *exchangerates_2014_01_14.json*
+I used the begining of 2014 as the date. This method needs 
+improvement because it would be better to look at the loan date 
+and use the exchange rate from that time.  But all the values 
+would have to then be converted to the same date.
+
+```{r}
+echange_rates <- read_json(file.path("data","exchangerates_2014_01_14.json")) %>% 
+  enter_object("rates")   %>% 
+  gather_keys("currency")  %>% 
+  append_values_number("rate") %>% 
+  select(-document.id)
+#  spread_values(rates      = jstring("rates"))
+```
+
+Next try to join this tibble to the kiva data.
+```{r}
+left_join(c,echange_rates) %>% 
+  mutate(loan_dollars = loan_amount * rate,
+         funded_dollars = funded_amount * rate)
+```
+
+
+
+
+
+

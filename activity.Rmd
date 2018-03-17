@@ -1,0 +1,35 @@
+---
+title: "Activity"
+output: html_notebook
+---
+# Read the data and load libraries
+```{r}
+source('read_data.R')
+```
+```{r}
+my_count <- function(d,group_var) {
+  group_var <- enquo(group_var)  # quote the value of group_var
+  d %>% group_by(!!group_var) %>% 
+    summarise(count = n())
+}
+```
+```{r}
+loans %>% my_count(activity)
+```
+```{r}
+loans %>% my_count(sector)
+```
+```{r}
+loans %>% my_count(use)
+```
+```{r}
+loans %>% my_count(country_code)
+```
+```{r}
+loans %>% my_count(country)
+```
+```{r}
+loans %>% my_count(region)
+```
+
+

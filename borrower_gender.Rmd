@@ -1,0 +1,189 @@
+---
+title: "Data Science for Good: Kiva Crowdfunding"
+subtitle: "Code Borrower Gender"
+output: html_notebook
+---
+
+Explore different ways to code the borrower gender.
+The requires you have the data table/frame loans from read_data_into_R.
+
+# Load any necessary libraries
+```{r,cache=TRUE,include=FALSE}
+source('library.R')
+```
+
+# Subset the Data
+In the development stage, we subset the data to a smaller data set. Subset the data set to Zimbabwe. .
+Make it a tibble.
+```{r}
+Zimbabwe <- loans %>% filter(country == "Zimbabwe") %>% 
+  as.tibble()
+```
+
+# Create summary statistics
+These next code chunks will demonstrate how to calculate the summaries
+Here are the summaries we will we will calculate.
+
+. Is the first borrower listed a female?
+. Count of males and females
+. Sum of ranks for mean and females by id
+
+First we will take a look a the records with male borrowers and use that to check 
+the subsequent calculations.
+
+## A filter example
+This is used to cross check/verify that the next queries get the correct records.
+select the fields id and borrower_genders only
+filter to males only
+[^e]male  male not preceded by e
+```{r,echo=FALSE}
+gender <- Zimbabwe %>% 
+  select(id,borrower_genders) %>% 
+  filter(str_detect(borrower_genders, regex("[^e]male",ignore_case = TRUE))) %>% 
+  arrange(id)
+gender
+```
+## Unnest the borrower genders
+Unnest example:
+
+* Create a tidy text tibble.
+* Create one record for each word.
+* Select the records with male.
+* Sort by id.
+```{r}
+Zimbabwe %>% 
+  select(id,borrower_genders) %>% 
+  unnest_tokens(word,borrower_genders) %>% 
+  filter(word == 'male') %>% 
+  arrange(id)
+```
+## Is the first borrower listed a female?
+```{r}
+gender %>% 
+  mutate(female_first = str_detect(borrower_genders, regex("^female",ignore_case = TRUE))) %>% 
+  group_by(id) %>%
+  mutate(female_first = max(female_first)) %>% 
+  arrange(id)
+```
+
+## Count of males and females
+
+* Code a 1 for female and 1 for male 
+* Count the number of females and males
+* Calculate the percent of females.
+```{r}
+gender %>% 
+  unnest_tokens(word,borrower_genders) %>%
+  group_by(id) %>%
+  summarise(female = sum(str_detect(word, regex("female",ignore_case = TRUE))),
+            male   = sum(str_detect(word, regex("^male",ignore_case = TRUE)))) %>% 
+  mutate(female_percent = female/(female + male)) %>% 
+  ungroup()
+```
+# Sum of ranks for men and females by id
+
+First, show how the order/rank can be calculated.
+
+* Code the order of male/female in borrower_genders
+* Identify the position of the occurance.
+* Filter for the men so the results can be checked.
+```{r}
+gender %>% 
+  unnest_tokens(word,borrower_genders) %>%
+  mutate(female = str_detect(word, regex("female",ignore_case = TRUE))) %>% 
+  group_by(id) %>% 
+  mutate(order_number = row_number()) %>%
+  ungroup()  %>% 
+  filter(!female) %>% 
+  arrange(id,order_number)
+```
+This is the same thing , but add a sum of ranks.
+Impute missing,when there are no female or male borrowers with a zero.
+```{r}
+gender %>% 
+  unnest_tokens(word,borrower_genders) %>%
+  mutate(female = str_detect(word, regex("female",ignore_case = TRUE))) %>% 
+  group_by(id) %>% 
+  mutate(order_number = row_number()) %>%
+  ungroup()  %>% 
+  group_by(id,word)  %>% 
+  summarise(sum_rank = sum(order_number))  %>% 
+  ungroup() %>% 
+  spread(word,sum_rank)  %>% 
+  mutate(male_rank_sum = Hmisc::impute(male,0),female_rank_sum = Hmisc::impute(female,0)) %>% 
+  select(id,male_rank_sum,female_rank_sum)
+```
+
+
+
+
+
+## Put everything together
+```{r}
+gender_first <- gender %>% 
+  mutate(gender_first = str_detect(borrower_genders, regex("^female",ignore_case = TRUE))) %>% 
+  group_by(id) %>%
+  mutate(gender_first = factor(max(gender_first),levels=c(0,1),labels = c("Male","Female"))) %>% 
+  arrange(id) 
+
+count_borrowers <-  gender %>% 
+  unnest_tokens(word,borrower_genders) %>%
+  group_by(id) %>%
+  summarise(female_count = sum(str_detect(word, regex("female",ignore_case = TRUE))),
+            male_count   = sum(str_detect(word, regex("^male",ignore_case = TRUE)))) 
+sum_ranks <- gender %>% 
+  unnest_tokens(word,borrower_genders) %>%
+  mutate(female = str_detect(word, regex("female",ignore_case = TRUE))) %>% 
+  group_by(id) %>% 
+  mutate(order_number = row_number()) %>%
+  ungroup()  %>% 
+  group_by(id,word)  %>% 
+  summarise(sum_rank = sum(order_number))  %>% 
+  ungroup() %>% 
+  spread(word,sum_rank)  %>% 
+  mutate(male_rank_sum = Hmisc::impute(male,0),female_rank_sum = Hmisc::impute(female,0)) %>% 
+  select(id,male_rank_sum,female_rank_sum)
+
+selected_fields <- Zimbabwe %>% 
+  select(id,loan_amount,funded_amount,term_in_months)
+
+borrower_genders <-inner_join(gender_first,count_borrowers,by=c("id")) %>% 
+  inner_join(sum_ranks,by=c('id')) %>% 
+  inner_join(selected_fields,by=c('id'))
+
+```
+```{r}
+borrower_genders
+```
+```{r}
+save(borrower_genders,file=file.path("data","borrower_genders"))
+```
+
+```{r}
+borrower_genders %>% ggplot() +
+  aes(loan_amount,term_in_months,color=gender_first) +
+  geom_point()
+
+```
+```{r}
+borrower_genders %>% ggplot() +
+  aes(loan_amount,term_in_months,fill=gender_first,group=gender_first) +
+  geom_boxplot()
+
+```
+```{r}
+borrower_genders %>% 
+  ggplot(aes(y=loan_amount,x=gender_first,group=gender_first)) +
+  geom_boxplot()
+
+```
+
+
+
+
+
+
+
+
+
+
