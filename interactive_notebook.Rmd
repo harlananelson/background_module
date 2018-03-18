@@ -1,0 +1,80 @@
+---
+title: "R Notebook"
+runtime: shiny
+output: html_notebook
+---
+
+# Heading
+
+* bullet
+* bullet
+
+##sub heading
+
+HarlanANelson@gmail.com
+
+```{r,}
+source(file.path('library.R'))
+```
+
+```{r}
+#d <- loans %>% dplyr::sample_n(1000)
+load(file=file.path("data","d"))
+```
+```{r}
+choices <- list("activity","sector")
+```
+
+
+```{r}
+my_count <- function(d,group_var) {
+  group_var <- enquo(group_var)  # quote the value of group_var
+  d %>% group_by(!!group_var) %>% 
+    summarise(count = n())
+}
+```
+
+```{r}
+dc <- d %>% my_count(activity) %>% arrange(-count) %>%  slice(1:5)
+```
+
+```{r}
+inputPanel(
+  selectInput("var_x", label = "Plot X variable:",
+              choices = choices, selected = 'activity')
+)
+``` 
+
+```{r}
+renderPlot({
+  dc <- d %>% my_count(input$var_x) %>% arrange(-count) %>%  slice(1:5)
+  dc %>% ggplot() +
+  aes_string(x=input$var_x,y="count",group=input$var_x) +
+  geom_col()
+})
+```
+```{r}
+choices[[1]]
+```
+
+
+```{r,eval=FALSE}
+  dc %>% ggplot() +
+  aes_string(x=choices[[1]],y="count",group=choices[[1]]) +
+  geom_col()
+```
+
+```{r,eval=FALSE}
+dc %>% ggplot() +
+  aes_string(x='activity',y="count",group='activity') +
+  geom_col()
+```
+```{r,eval=FALSE}
+dc %>% ggplot() +
+  aes(x=activity,y=count,group=activity,stat='identity') +
+  geom_col()
+
+```
+
+
+

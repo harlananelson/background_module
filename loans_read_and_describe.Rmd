@@ -1,0 +1,31 @@
+---
+title: 'Data Science for Good: Kiva Crowdfunding'
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+
+```{r}
+source('read_data.R')
+```
+
+Read in the kiva_loans data.
+
+```{r}
+Hmisc::contents(loans)
+```
+
+```{r}
+loans <- Hmisc::dataframeReduce(loans)
+```
+
+```{r}
+Hmisc::contents(loans)
+```
+
+```{r}
+Hmisc::describe(loans)
+```
+
